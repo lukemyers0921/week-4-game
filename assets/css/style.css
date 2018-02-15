@@ -1,8 +1,33 @@
-.luke {
+.pic {
     max-width: 100px;
+    background:white;
+    margin-right: 10px;
 }
 
 body {
     background-image: url("../images/background.png");
     background-size: cover;
+}
+
+.text {
+    color:lightblue;
+}
+
+.center  {
+    text-align: center;
+}
+
+.hero {
+    background: green;
+    color:white;
+}
+
+.villan,.wait {
+    background: red;
+    color: black;
+}
+
+.defender {
+    background: black;
+    color: red;
 }
