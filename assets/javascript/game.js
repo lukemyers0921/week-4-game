@@ -1,8 +1,9 @@
 
-    var characters = [{name:"obi", attack:10, counterAttack: 10,health:120},
-    { name:"luke", attack:27, counterAttack: 5,health:105},
-    {name:"sidious", attack:2, counterAttack: 20,health:180},
-    {name:"maul", attack:4, counterAttack: 15,health:160},]
+    var characters = [
+    { name:"luke", attack:27, counterAttack: 5,health:105, image: "assets/images/luke.png"},
+    {name:"obi", attack:10, counterAttack: 10,health:120,image: "assets/images/obi.png"},
+    {name:"sidious", attack:2, counterAttack: 20,health:180 , image: "assets/images/sidious.png"},
+    {name:"maul", attack:4, counterAttack: 15,health:160 , image: "assets/images/maul.png"},]
     var counter = 0;
     var heroAdder;
     var heroAtk;
@@ -10,15 +11,19 @@
     var defenderAtk;
     var defenderHp;
     var wins =0;
-/* <div class = "col-xs-3 col-sm-3 col-md-3 col-lg-3 pic char" id = "luke">
-                <p class = "center">Luke</p>
-                <img class = "img-responsive pic" src = "assets/images/luke.png">
-                <p id = "hp" class = "center">100</p>
-            </div> */
+
     function populate(){
-            $('div')
+        console.log("populate");
+        for(i = 0; i < characters.length; i++) {
+            $('#yourChar').append('<div class = "col-xs-3 col-sm-3 col-md-3 col-lg-3 pic char" id = "' + characters[i].name + '">');
+            var idHolder = '#' + characters[i].name;
+            $(idHolder).append('<p class = "center">' + characters[i].name + '</p>')
+            $(idHolder).append('<img class = "img-responsive pic" src ="' + characters[i].image + '">');
+            $(idHolder).append('<p id = "hp" class = "center">' + characters[i].health + '</p>')
+        }
     }
     function heroStats(a){
+        console.log("heroStats");
         var id = $(a).attr('id');
         if(wins == 0){
         for(i = 0; i < characters.length; i++){
@@ -31,6 +36,7 @@
         }
     }
     function villanStats(a){
+        console.log("villanStats");
         var id = $(a).attr('id');
         for(i = 0; i < characters.length; i++){
             if(id == characters[i].name){
@@ -41,16 +47,19 @@
         }
     }
     function one(a){
-        if(counter ===0){
+        console.log("one");
+        if(counter === 0){
         $(a).addClass('hero');
         heroStats(a);
         $('.hero').removeClass('char');
         $('.char').addClass('villan');
+        $('.hero').addClass('char');
         $('.villan').appendTo("#enemyAtk");
         counter++;
         }
     }
     function two(a){
+        console.log("two");
         if(counter ===1){
         $(a).addClass('defender');
         villanStats(a);
@@ -61,60 +70,71 @@
     }
    
     function fight(){
+        console.log("fight");
         if(defenderHp > 0 && heroHp > 0){
         defenderHp = defenderHp - heroAtk;
-        console.log("defender hp:" +defenderHp);
-        console.log("hero attack: " + heroAtk);
         $('#defender1 #hp').text(defenderHp);
         heroHp = heroHp - defenderAtk;
-        console.log("Hero HP: " + heroHp);
-        console.log("defender attack: " + defenderAtk);
         $('#yourChar #hp').text(heroHp);
         $('#fightText p').text("You attacked defender for " + heroAtk + " .Defender attacked you for " + defenderAtk);
-        heroAtk = heroAtk + heroAdder;}
+        heroAtk = heroAtk + heroAdder;
+        
+        }
         if(defenderHp < 0){
-            $('.defender').addClass('char')
-            $('.defender').remove('.defender, .villan')
-            $('.defender').appendTo("#yourChar").hide();
+            $('.defender').remove();
             $('#fightText p').text("You defeated the defender. Select a new One.");
             defenderAtk = 0;
             defenderHp = 0;
             wins ++;
-            console.log(wins)
             counter--;
         }
         if(wins == 3){
             $('#fightText p').text("You Win!");
-            restart();       
+            $('#reset').show();    
             }
         if(heroHp <= 0) {
                 $('#fightText p').text("You have lost.");
-                restart();
+                $('#reset').show();
             }
     }
-    function reset(){
-
-    }
     function restart(){
-    var counter = 0;
-    var heroAdder;
-    var heroAtk;
-    var heroHp;
-    var defenderAtk;
-    var defenderHp;
-    var wins =0;
-    $('div').remove('.hero, .villan, .defender');
+    console.log("restart");
+    counter = 0;
+    wins = 0;
+    $('.char').remove();
+    $('#fightText p').text("");
+    $('#yourChar #hp').text("");
+    $('#defender1 #hp').text("");  
+    heroAdder = null;
+    heroAtk = null;
+    heroHp = null;
+    defenderAtk = null;
+    defenderHp = null;
     }
-      $(document).ready(function(){
+    function start() {
+        console.log("start")
+        $('#reset').hide();
         $('.char').on('click', function(){
-            one(this);
+            var self = this;
+            one(self);
                 $('.villan').on('click', function(){
-                    two(this);  
+                   var self2 = this;
+                    two(self2);  
                 });
                
          });
          $('#button').on('click', function(){    
             fight();
         });
+        $('#reset').on('click', function(){
+            restart();
+            populate();
+            start();
+        });
+        
+    }
+   
+    $(document).ready(function(){
+        start();
      });
   
